@@ -28,8 +28,13 @@ fi
 IMPORT_FINISHED=/var/lib/postgresql/14/main/import-finished
 
 if [ ! -f ${IMPORT_FINISHED} ]; then
-  /app/init.sh
-  touch ${IMPORT_FINISHED}
+  if [ "$RUN_INIT_SCRIPT" == "true" ]; then
+    /app/init.sh
+    touch ${IMPORT_FINISHED}
+  else
+    echo "Initial import has not been finished but RUN_INIT_SCRIPT was configured as false init.sh execution will be skipped"
+    chown -R nominatim:nominatim ${PROJECT_DIR}
+  fi    
 else
   chown -R nominatim:nominatim ${PROJECT_DIR}
 fi
